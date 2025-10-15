@@ -12,6 +12,7 @@
 		06554A262E9EE24C00810E3D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06554A252E9EE24C00810E3D /* ViewController.swift */; };
 		06554A2B2E9EE25300810E3D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 06554A2A2E9EE25300810E3D /* Assets.xcassets */; };
 		06554A2E2E9EE25300810E3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 06554A2C2E9EE25300810E3D /* LaunchScreen.storyboard */; };
+		06554A362EA0148900810E3D /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06554A352EA0148900810E3D /* SecondViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		06554A2A2E9EE25300810E3D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		06554A2D2E9EE25300810E3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		06554A2F2E9EE25300810E3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		06554A352EA0148900810E3D /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 				06554A212E9EE24C00810E3D /* AppDelegate.swift */,
 				06554A232E9EE24C00810E3D /* SceneDelegate.swift */,
 				06554A252E9EE24C00810E3D /* ViewController.swift */,
+				06554A352EA0148900810E3D /* SecondViewController.swift */,
 				06554A2A2E9EE25300810E3D /* Assets.xcassets */,
 				06554A2C2E9EE25300810E3D /* LaunchScreen.storyboard */,
 				06554A2F2E9EE25300810E3D /* Info.plist */,
@@ -134,6 +137,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06554A362EA0148900810E3D /* SecondViewController.swift in Sources */,
 				06554A262E9EE24C00810E3D /* ViewController.swift in Sources */,
 				06554A222E9EE24C00810E3D /* AppDelegate.swift in Sources */,
 				06554A242E9EE24C00810E3D /* SceneDelegate.swift in Sources */,
