@@ -15,7 +15,7 @@ final class ViewController: UIViewController {
 
     // MARK: - UI
 
-    private lazy var textLabel: UILabel = {
+    private let textLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.text = "Hello world"
@@ -24,19 +24,17 @@ final class ViewController: UIViewController {
         return label
     }()
 
-    private lazy var tapButton: UIButton = {
+    private let tapButton: UIButton = {
         let button = UIButton()
         button.setTitle("Tap me", for: .normal)
         button.backgroundColor = .blue
-        button.addTarget(self, action: #selector(tapMe), for: .touchUpInside)
         return button
     }()
 
-    private lazy var putDataButton: UIButton = {
+    private let putDataButton: UIButton = {
         let button = UIButton()
         button.setTitle("Save Value", for: .normal)
         button.backgroundColor = .green
-        button.addTarget(self, action: #selector(putData), for: .touchUpInside)
         return button
     }()
 
@@ -55,12 +53,11 @@ final class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupLayout()
+        setupView()
     }
 
     // MARK: - SetupLayouts
-
-    private func setupLayout() {
+    private func setupView() {
         view.backgroundColor = .white
         view.addSubview(stackView)
 
@@ -68,7 +65,13 @@ final class ViewController: UIViewController {
             $0.layer.cornerRadius = 10
             $0.layer.masksToBounds = true
         }
+        tapButton.addTarget(self, action: #selector(tapMe), for: .touchUpInside)
+        putDataButton.addTarget(self, action: #selector(putData), for: .touchUpInside)
 
+        setupConstraints()
+    }
+
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
@@ -78,7 +81,6 @@ final class ViewController: UIViewController {
     }
 
     // MARK: - Actions
-    
     @objc
     private func tapMe() {
         count += 1
