@@ -12,6 +12,7 @@ final class ViewController: UIViewController {
     // MARK: - Properties
 
     private var count = 0
+    private let networkManager: NetworkManagerProtocol = NetworkManager()
 
     // MARK: - UI
 
@@ -49,16 +50,28 @@ final class ViewController: UIViewController {
         return stackView
     }()
 
+    private let imageView: UIImageView = {
+        let image = UIImage(systemName: "photo.artframe.circle")
+        let imageView = UIImageView(image: image)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 100
+        return imageView
+    }()
+
     // MARK: - LifeCycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        loadImage()
     }
 
     // MARK: - SetupLayouts
     private func setupView() {
         view.backgroundColor = .white
+        view.addSubview(imageView)
         view.addSubview(stackView)
 
         [tapButton, putDataButton].forEach {
@@ -77,7 +90,24 @@ final class ViewController: UIViewController {
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+
+            imageView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 10),
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.heightAnchor.constraint(equalToConstant: 200),
+            imageView.widthAnchor.constraint(equalToConstant: 200)
         ])
+    }
+
+    private func loadImage() {
+        Task {
+            if let image = await networkManager.downloadImage() {
+                DispatchQueue.main.async {
+                    self.imageView.image = image
+                }
+            } else {
+                print("No image")
+            }
+        }
     }
 
     // MARK: - Actions
