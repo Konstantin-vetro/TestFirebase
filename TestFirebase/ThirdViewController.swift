@@ -16,12 +16,10 @@ struct Person: Hashable {
 final class ThirdViewController: UIViewController {
 
     // MARK: - Properties
-    private var persons: [Person] = [
-        Person(id: UUID(), name: "Alex"),
-        Person(id: UUID(), name: "Jake"),
-        Person(id: UUID(), name: "Lisa")
-    ]
-    private var dataSource: UICollectionViewDiffableDataSource<Section, Person>?
+    private var users: [UserModel] = []
+
+    private var dataSource: UICollectionViewDiffableDataSource<Section, UserModel>?
+    private let networkManager: NetworkManagerProtocol = NetworkManager()
 
     private enum Section: CaseIterable {
         case main
@@ -31,8 +29,8 @@ final class ThirdViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.backgroundColor = .white
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cellId")
+        collectionView.backgroundColor = .darkGray
+        collectionView.register(UserCell.self, forCellWithReuseIdentifier: UserCell.identifier)
         return collectionView
     }()
 
@@ -42,52 +40,58 @@ final class ThirdViewController: UIViewController {
         view.backgroundColor = .orange
         view.addSubview(collectionView)
         setupDataSource()
-        updateSnapshot()
+        loadData()
     }
 
-    // MARK: - Setup Views
-    // 1 CREATE Compositional LAYOUT
+    // MARK: - Create Compositional Layout
     private func createCompositionalLayout() -> UICollectionViewLayout {
-        let inset: CGFloat = 5
+        let spacing: CGFloat = 10
 
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.2))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.23))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
 
         let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 5
-        section.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+        section.interGroupSpacing = spacing
+        section.contentInsets = NSDirectionalEdgeInsets(top: spacing, leading: spacing, bottom: spacing, trailing: spacing)
 
         let layout = UICollectionViewCompositionalLayout(section: section)
         return layout
     }
 
-    private func updateSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Person>()
+    private func updateSnapshot(with users: [UserModel]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, UserModel>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(persons)
+        snapshot.appendItems(users)
         dataSource?.apply(snapshot)
     }
 
-    // MARK: - Setup Constraints
-
-    // MARK: - Private Methods
-    // 2 Setup DataSource
+    // MARK: - Setup DataSource
     private func setupDataSource() {
         dataSource = UICollectionViewDiffableDataSource(
             collectionView: collectionView,
-            cellProvider: { collectionView, indexPath, person in
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath)
-                var configuration = UIListContentConfiguration.cell()
-                configuration.text = person.name
-                cell.contentConfiguration = configuration
-                cell.backgroundColor = .orange
-                cell.layer.borderColor = UIColor.red.cgColor
-                cell.layer.borderWidth = 5
+            cellProvider: { [weak self] collectionView, indexPath, user in
+                guard let self, let cell = collectionView.dequeueReusableCell(withReuseIdentifier: UserCell.identifier, for: indexPath) as? UserCell else { return UICollectionViewCell()}
+                cell.configureCell(for: user, manager: self.networkManager)
+                cell.backgroundColor = .gray
+                cell.layer.cornerRadius = 10
+                cell.clipsToBounds = true
                 return cell
-        })
+            })
+    }
+
+    private func loadData() {
+        Task {
+            do {
+                let fetchedUsers = try await networkManager.fetchData()
+                users = fetchedUsers
+                updateSnapshot(with: users)
+            } catch {
+                print("Ошибка загрузки: \(error)")
+            }
+        }
     }
 }
 
